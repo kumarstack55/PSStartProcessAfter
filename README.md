@@ -12,7 +12,7 @@ Or execute a process after a specified process starts.
 
 ```powershell
 # powershell
-git clone ...
+git clone https://github.com/kumarstack55/PSStartProcessAfter.git
 Set-Location .\PSStartProcessAfter\
 ```
 
@@ -22,7 +22,6 @@ Set-Location .\PSStartProcessAfter\
 
 ```powershell
 # powershell
-. .\Start-ProcessAfter.ps1
 Start-ProcessAfter -WaitType "UrlIsAccessible" -WaitFor "https://www.example.com" -CommandLine "notepad.exe"
 ```
 
@@ -30,7 +29,6 @@ Start-ProcessAfter -WaitType "UrlIsAccessible" -WaitFor "https://www.example.com
 
 ```powershell
 # powershell
-. .\Start-ProcessAfter.ps1
 Start-ProcessAfter -WaitType "FolderExists" -WaitFor "$HOME\OneDrive\Personal Vault" -CommandLine "notepad.exe"
 ```
 
@@ -38,7 +36,6 @@ Start-ProcessAfter -WaitType "FolderExists" -WaitFor "$HOME\OneDrive\Personal Va
 
 ```powershell
 # powershell
-. .\Start-ProcessAfter.ps1
 Start-ProcessAfter -WaitType "ProcessExists" -WaitFor "notepad" -CommandLine "calc.exe"
 ```
 
