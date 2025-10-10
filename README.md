@@ -62,7 +62,14 @@ Set-Location .\PSStartProcessAfter\
 $scriptItem = Get-Item .\Start-ProcessAfter.ps1
 $scriptPath = $scriptItem.FullName
 
-$arguments = "-NoLogo -NoProfile -Command `". {0}`"; Start-ProcessAfter -WaitType UrlIsAccessible -WaitFor 'https://www.example.com' -CommandLine 'notepad.exe'; Start-Sleep 60" -f $scriptPath
+
+# Example1: Launch notepad after internet is accessible.
+$arguments = "-NoLogo -NoProfile -Command `". {0}; Start-ProcessAfter -WaitType UrlIsAccessible -WaitFor 'https://www.example.com' -CommandLine 'notepad.exe'; Start-Sleep 60`"" -f $scriptPath
+
+
+# Example2: Launch keepass after one drive vault is available.
+$arguments = "-NoLogo -NoProfile -Command `". {0}; Start-ProcessAfter -WaitType FolderExists -WaitFor '$HOME\OneDrive\Personal Vault' -CommandLine '`\`"C:\Program Files\KeePass Password Safe 2\KeePass.exe`\`"'; Start-Sleep 60`"" -f $scriptPath
+
 
 $shortcutName = "StartProcessAfterUrlIsAccessible.lnk"
 $location = Get-Location
