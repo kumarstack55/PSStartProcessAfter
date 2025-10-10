@@ -285,6 +285,7 @@ function Start-ProcessAfter {
 
     Write-Host "Condition met! Executing process..." -ForegroundColor Green
     try {
+        Write-Host "CommandLine: ${CommandLine}" -ForegroundColor Green
         Start-ProcessUsingCommandLine -CommandLine $CommandLine
         Write-Host "Command line executed: $CommandLine" -ForegroundColor Green
     }
