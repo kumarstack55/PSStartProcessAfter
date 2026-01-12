@@ -52,7 +52,15 @@ Start-ProcessAfter -WaitType "ProcessExists" -WaitFor "notepad" -CommandLine "ca
 
 - CheckIntervalSeconds: Check interval in seconds (default: 5)
 
-## Creating Shortcuts
+## Creating shortcuts
+
+### Helper function to create shortcuts
+
+```powershell
+# powershell
+$shortcutDirectoryPath = "$env:APPDATA\PSStartProcessAfter\Shortcuts"
+New-Item -Path $shortcutDirectoryPath -ItemType Directory -Force | Out-Null
+```
 
 ```powershell
 # powershell
@@ -60,30 +68,137 @@ Start-ProcessAfter -WaitType "ProcessExists" -WaitFor "notepad" -CommandLine "ca
 Set-Location .\PSStartProcessAfter\
 
 $scriptItem = Get-Item .\Start-ProcessAfter.ps1
-$scriptPath = $scriptItem.FullName
 
+function New-StartProcessAfterShortcutItem {
+    [CmdletBinding(SupportsShouldProcess)]
+    param(
+        [Parameter(Mandatory)]$ScriptItem,
+        [Parameter(Mandatory)][string]$WaitType,
+        [Parameter(Mandatory)][string]$WaitFor,
+        [Parameter(Mandatory)][string]$CommandLine,
+        [Parameter(Mandatory)][string]$ShortcutDirectoryPath,
+        [Parameter(Mandatory)][string]$ShortcutBaseName,
+        [Parameter()][bool]$NoExit = $false,
+        [Parameter()][int]$Seconds = 60
+    )
+    $scriptPath = $ScriptItem.FullName
+    $shortcutName = "{0}.lnk" -f $ShortcutBaseName
+    $shortcutPath = Join-Path -Path $ShortcutDirectoryPath -ChildPath $shortcutName
+    $extraArguments = if ($NoExit) { "-NoExit " } else { "" }
+    $arguments = @'
+-NoLogo -NoProfile {0}-Command ". {1}; Start-ProcessAfter -WaitType {2} -WaitFor '{3}' -CommandLine '{4}'; Start-Sleep {5}"
+'@ -f $extraArguments, $scriptPath, $WaitType, $WaitFor, $CommandLine, $Seconds
+    if ($PSCmdlet.ShouldProcess($shortcutPath, "Create Shortcut with arguments: $arguments")) {
+        $wsh = New-Object -ComObject WScript.Shell
+        $shortcut = $wsh.CreateShortcut($shortcutPath)
+        $shortcut.TargetPath = "powershell"
+        $shortcut.Arguments = $arguments
+        $shortcut.WorkingDirectory = "$PWD"
+        $shortcut.Save()
+    }
+    $item = Get-Item -LiteralPath $shortcutPath
 
-# Example1: Launch notepad after internet is accessible.
-$arguments = "-NoLogo -NoProfile -Command `". {0}; Start-ProcessAfter -WaitType UrlIsAccessible -WaitFor 'https://www.example.com' -CommandLine 'notepad.exe'; Start-Sleep 60`"" -f $scriptPath
+    $item
+}
+```
 
+### Example1: Launch notepad after internet is accessible
 
-# Example2: Launch keepass after one drive vault is available.
-$arguments = "-NoLogo -NoProfile -Command `". {0}; Start-ProcessAfter -WaitType FolderExists -WaitFor '$HOME\OneDrive\Personal Vault' -CommandLine '`\`"C:\Program Files\KeePass Password Safe 2\KeePass.exe`\`"'; Start-Sleep 60`"" -f $scriptPath
+```powershell
+# powershell
+$shortcutDirectoryPath = "$env:APPDATA\PSStartProcessAfter\Shortcuts"
 
+$params = @{
+    ScriptItem = $scriptItem
+    WaitType = "UrlIsAccessible"
+    WaitFor = "https://www.example.com"
+    CommandLine = "notepad.exe"
+    ShortcutDirectoryPath = $shortcutDirectoryPath
+    ShortcutBaseName = "StartNotepadAfterUrlIsAccessible"
+}
 
-$shortcutName = "StartProcessAfterUrlIsAccessible.lnk"
-$location = Get-Location
-$shortcutDirectory = $location.Path
-$shortcutPath = Join-Path -Path $shortcutDirectory -ChildPath $shortcutName
+New-StartProcessAfterShortcutItem @params
+```
 
-$wsh = New-Object -ComObject WScript.Shell
-$shortcut = $wsh.CreateShortcut($shortcutPath)
-$shortcut.TargetPath = "powershell"
-$shortcut.Arguments = $arguments
-$shortcut.WorkingDirectory = "$PWD"
-$shortcut.Save()
+### Example2: Launch KeePass after OneDrive Vault is available.
 
-Start-Process .
+```powershell
+# powershell
+$shortcutDirectoryPath = "$env:APPDATA\PSStartProcessAfter\Shortcuts"
+$oneDriveVaultPath = Join-Path -Path $HOME -ChildPath "OneDrive\Personal Vault"
+
+# Note that you must escape string using double quotes and backslashes here.
+$keepassPath = '\"C:\Program Files\KeePass Password Safe 2\KeePass.exe\"'
+
+$params = @{
+    ScriptItem = $scriptItem
+    WaitType = "FolderExists"
+    WaitFor = $oneDriveVaultPath
+    CommandLine = $keepassPath
+    ShortcutDirectoryPath = $shortcutDirectoryPath
+    ShortcutBaseName = "StartKeepassAfterOneDriveVaultIsAvailable"
+}
+
+New-StartProcessAfterShortcutItem @params
+```
+
+### Example3: Launch keepass after PAGEANT.exe is running.
+
+```powershell
+# powershell
+$shortcutDirectoryPath = "$env:APPDATA\PSStartProcessAfter\Shortcuts"
+
+#$oneDriveVaultPath = Join-Path -Path $HOME -ChildPath "OneDrive\個人用 Vault"
+
+# Note that you must escape string using double quotes and backslashes here.
+$keepassPath = '\"C:\Program Files\KeePass Password Safe 2\KeePass.exe\"'
+
+$params = @{
+    ScriptItem = $scriptItem
+    WaitType = "ProcessExists"
+    WaitFor = "PAGEANT"
+    CommandLine = $keepassPath
+    ShortcutDirectoryPath = $shortcutDirectoryPath
+    ShortcutBaseName = "StartKeepassAfterPageantIsRunning"
+    NoExit = $true
+}
+
+New-StartProcessAfterShortcutItem @params
+```
+
+### Example3: Launch Keepass if the pageant is running and the OneDrive Personal Vault folder exists
+
+```powershell
+# powershell
+$shortcutDirectoryPath = "$env:APPDATA\PSStartProcessAfter\Shortcuts"
+
+$oneDriveVaultPath = Join-Path -Path $HOME -ChildPath "OneDrive\Perosonal Vault"
+
+# Note that you must escape string using double quotes and backslashes here.
+$keepassPath = '\"C:\Program Files\KeePass Password Safe 2\KeePass.exe\"'
+
+$params2 = @{
+    ScriptItem = $scriptItem
+    WaitType = "FolderExists"
+    WaitFor = $oneDriveVaultPath
+    CommandLine = $keepassPath
+    ShortcutDirectoryPath = $shortcutDirectoryPath
+    ShortcutBaseName = "StartKeepassAfterOneDriveVaultIsAvailable"
+}
+$item2 = New-StartProcessAfterShortcutItem @params2
+
+# Note that escaping is unnecessary here. Since the path contains no spaces, there is no need to enclose it in double quotes.
+$commandLine = $item2.FullName
+
+$params1 = @{
+    ScriptItem = $scriptItem
+    WaitType = "ProcessExists"
+    WaitFor = "PAGEANT"
+    CommandLine = $commandLine
+    ShortcutDirectoryPath = $shortcutDirectoryPath
+    ShortcutBaseName = "StartKeepassAfterOneDriveVaultIsAvailableAfterPageantIsRunning"
+}
+New-StartProcessAfterShortcutItem @params1
 ```
 
 ## Development requirements
