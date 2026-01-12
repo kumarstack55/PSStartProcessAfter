@@ -46,7 +46,7 @@ function Test-WebCondition {
     $oldProgressPreference = $ProgressPreference
     $ProgressPreference = 'SilentlyContinue'
     try {
-        $response = Invoke-WebRequest -Uri $Url -Method Get -TimeoutSec 10 -ErrorAction Stop
+        $response = Invoke-WebRequest -UseBasicParsing -Uri $Url -Method Get -TimeoutSec 10 -ErrorAction Stop
         $statusCode = $response.StatusCode
         $webCondition = $statusCode -eq 200
     } catch {
