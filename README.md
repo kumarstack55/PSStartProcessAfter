@@ -42,6 +42,7 @@ Start-ProcessAfter -WaitType "ProcessExists" -WaitFor "notepad" -CommandLine "ca
 ## Parameters
 
 - WaitType: Specifies the type of condition to wait for
+
   - `"UrlIsAccessible"`: Wait for URL accessibility
   - `"FolderExists"`: Wait for folder existence
   - `"ProcessExists"`: Wait for process execution
@@ -120,7 +121,7 @@ $params = @{
 New-StartProcessAfterShortcutItem @params
 ```
 
-### Example2: Launch KeePass after OneDrive Vault is available.
+### Example2: Launch KeePass after OneDrive Vault is available
 
 ```powershell
 # powershell
@@ -142,7 +143,7 @@ $params = @{
 New-StartProcessAfterShortcutItem @params
 ```
 
-### Example3: Launch keepass after PAGEANT.exe is running.
+### Example3: Launch keepass after PAGEANT.exe is running
 
 ```powershell
 # powershell
@@ -198,17 +199,6 @@ $params1 = @{
 }
 New-StartProcessAfterShortcutItem @params1
 ```
-
-## Development requirements
-
-- Visual Studio Code
-
- Visual Stuido Extensions
-
-- [PowerShell](https://marketplace.visualstudio.com/items?itemName=ms-vscode.PowerShell)
-- [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
-- [Markdownlint](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint)
-- [EditorConfig for VS Code](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig)
 
 ## LICENSE
 
