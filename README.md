@@ -1,14 +1,18 @@
 # PSStartProcessAfter
 
-Executes a process after specified conditions are met.
+[![PowerShell Version](https://img.shields.io/badge/PowerShell-5.1+-blue.svg)](https://github.com/PowerShell/PowerShell)
+[![Platform](https://img.shields.io/badge/platform-Windows-lightgrey.svg)](https://www.microsoft.com/windows)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+
+⏳ Executes a process after specified conditions are met.
 For example, wait for a web request to succeed before executing a process.
 Or execute a process after a specified process starts.
 
-## Requirements
+## 📋 Requirements
 
 - Windows PowerShell 5.1+
 
-## Installation
+## 📦 Installation
 
 ```powershell
 # powershell
@@ -16,7 +20,7 @@ git clone https://github.com/kumarstack55/PSStartProcessAfter.git
 Set-Location .\PSStartProcessAfter\
 ```
 
-## Usage
+## 🚀 Usage
 
 ### Execute a process after a web request succeeds
 
@@ -39,7 +43,7 @@ Start-ProcessAfter -WaitType "FolderExists" -WaitFor "$HOME\OneDrive\Personal Va
 Start-ProcessAfter -WaitType "ProcessExists" -WaitFor "notepad" -CommandLine "calc.exe"
 ```
 
-## Parameters
+## ⚙️ Parameters
 
 - WaitType: Specifies the type of condition to wait for
 
@@ -53,7 +57,7 @@ Start-ProcessAfter -WaitType "ProcessExists" -WaitFor "notepad" -CommandLine "ca
 
 - CheckIntervalSeconds: Check interval in seconds (default: 5)
 
-## Creating shortcuts
+## 🔗 Creating shortcuts
 
 ### Helper function to create shortcuts
 
@@ -75,6 +79,15 @@ $scriptItem = Get-Item .\Start-ProcessAfter.ps1
 
 ### Example1: Launch notepad after internet is accessible
 
+```mermaid
+flowchart TB
+
+start1(("Start"))
+--> wailtUntil1("Wait until url is accessible")
+-->|"Yes"| action1(Launch notepad.exe)
+--> end1(("End"))
+```
+
 ```powershell
 # powershell
 $shortcutDirectoryPath = "$env:APPDATA\PSStartProcessAfter\Shortcuts"
@@ -92,6 +105,15 @@ New-StartProcessAfterShortcutItem @params
 ```
 
 ### Example2: Launch KeePass after OneDrive Vault is available
+
+```mermaid
+flowchart TB
+
+start1(("Start"))
+--> wailtUntil1("Wait until folder exists")
+-->|"Yes"| action1(Launch KeePass)
+--> end1(("End"))
+```
 
 ```powershell
 # powershell
@@ -115,6 +137,15 @@ New-StartProcessAfterShortcutItem @params
 
 ### Example3: Launch keepass after PAGEANT.exe is running
 
+```mermaid
+flowchart TB
+
+start1(("Start"))
+--> wailtUntil1("Wait until process exists")
+-->|"Yes"| action1(Launch KeePass)
+--> end1(("End"))
+```
+
 ```powershell
 # powershell
 $shortcutDirectoryPath = "$env:APPDATA\PSStartProcessAfter\Shortcuts"
@@ -135,6 +166,17 @@ New-StartProcessAfterShortcutItem @params
 ```
 
 ### Example3: Launch Keepass if the pageant is running and the OneDrive Personal Vault folder exists
+
+```mermaid
+flowchart TB
+
+start1(("Start"))
+--> wailtUntil1("Wait until folder exists")
+-->|"Yes"| action1(Launch Shortcut)
+--> wailtUntil2("Wait until process exists")
+-->|"Yes"| action2(Launch KeePass)
+--> end1(("End"))
+```
 
 ```powershell
 # powershell
