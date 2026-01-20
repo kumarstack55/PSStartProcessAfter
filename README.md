@@ -148,8 +148,6 @@ New-StartProcessAfterShortcutItem @params
 # powershell
 $shortcutDirectoryPath = "$env:APPDATA\PSStartProcessAfter\Shortcuts"
 
-#$oneDriveVaultPath = Join-Path -Path $HOME -ChildPath "OneDrive\個人用 Vault"
-
 # Note that you must escape string using double quotes and backslashes here.
 $keepassPath = '\"C:\Program Files\KeePass Password Safe 2\KeePass.exe\"'
 
