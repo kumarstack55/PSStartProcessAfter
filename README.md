@@ -80,6 +80,10 @@ $scriptItem = Get-Item .\Start-ProcessAfter.ps1
 ### Example1: Launch notepad after internet is accessible
 
 ```mermaid
+---
+config:
+  look: handDrawn
+---
 flowchart TB
 
 start1(("Start"))
@@ -107,6 +111,10 @@ New-StartProcessAfterShortcutItem @params
 ### Example2: Launch KeePass after OneDrive Vault is available
 
 ```mermaid
+---
+config:
+  look: handDrawn
+---
 flowchart TB
 
 start1(("Start"))
@@ -138,6 +146,10 @@ New-StartProcessAfterShortcutItem @params
 ### Example3: Launch keepass after PAGEANT.exe is running
 
 ```mermaid
+---
+config:
+  look: handDrawn
+---
 flowchart TB
 
 start1(("Start"))
@@ -168,6 +180,10 @@ New-StartProcessAfterShortcutItem @params
 ### Example3: Launch Keepass if the pageant is running and the OneDrive Personal Vault folder exists
 
 ```mermaid
+---
+config:
+  look: handDrawn
+---
 flowchart TB
 
 start1(("Start"))
