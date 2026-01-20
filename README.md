@@ -107,6 +107,10 @@ New-StartProcessAfterShortcutItem @params
 ### Example2: Launch KeePass after OneDrive Vault is available
 
 ```mermaid
+---
+config:
+  look: handDrawn
+---
 flowchart TB
 
 start1(("Start"))
